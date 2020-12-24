@@ -34,7 +34,9 @@ namespace Dotnet.Script.Core
             var runtimeDepsMap = ScriptCompiler.CreateScriptDependenciesMap(runtimeDeps);
             var assembly = Assembly.LoadFrom(dllPath); // this needs to be called prior to 'AppDomain.CurrentDomain.AssemblyResolve' event handler added
 
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => ResolveAssembly(args, runtimeDepsMap);
+            Assembly OnResolve(object sender, ResolveEventArgs args) => ResolveAssembly(args, runtimeDepsMap);
+
+            AppDomain.CurrentDomain.AssemblyResolve += OnResolve;
 
             var type = assembly.GetType("Submission#0");
             var method = type.GetMethod("<Factory>", BindingFlags.Static | BindingFlags.Public);
@@ -55,6 +57,10 @@ namespace Dotnet.Script.Core
             {
                 ScriptConsole.WriteError(ex.ToString());
                 throw new ScriptRuntimeException("Script execution resulted in an exception.", ex);
+            }
+            finally
+            {
+                AppDomain.CurrentDomain.AssemblyResolve -= OnResolve;
             }
 
             return await resultTask;
