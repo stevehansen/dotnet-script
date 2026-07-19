@@ -8,7 +8,7 @@ if [ ! -d "$DOTNET_SCRIPT" ]; then
     curl -L https://github.com/dotnet-script/dotnet-script/releases/download/$currentVersion/dotnet-script.$currentVersion.zip > "$SCRIPT_DIR/build/dotnet-script.zip"
     unzip -o "$SCRIPT_DIR/build/dotnet-script.zip" -d "$SCRIPT_DIR/build/"
     if [ $? -ne 0 ]; then
-        echo "An error occured while downloading dotnet-script"
+        echo "An error occurred while downloading dotnet-script"
         exit 1
     fi
 fi
